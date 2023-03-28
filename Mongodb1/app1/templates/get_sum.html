@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>sumdata</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
+    <script src='main.js'></script>
+</head>
+<body>
+     <h2>#3] From a given trip, give the sum of "Sensor X" throughout the entire trip</h2>
+    <form>
+        <table border="dark">
+            <thead>
+              <tr>
+                <!-- <th scope="col">sensorName</th> -->
+                <th scope="col">index0_sum</th>
+                <th scope="col">index1_sum</th>
+                <th scope="col">index2_sum</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+              {% for i in d %}
+                <tr>
+                  <!-- <td>{{i.sensorName}}</td> -->
+                  <td>{{i.index0_sum}}</td>
+                  <td>{{i.index1_sum}}</td>
+                  <td>{{i.index2_sum}}</td>
+                </tr>
+              {% endfor %}
+              </tr>
+              
+              
+            </tbody>
+          </table>
+    </form>
+</body>
+</html>
