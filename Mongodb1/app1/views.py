@@ -10,14 +10,15 @@ db = connection.querydata
 
 # Create your views here.
 
-def cvs(data):
+def cvs(data,name):
     print(data)
     response=HttpResponse(
         content_type='text/csv',
-        headers={'Content-Disposition':'attachment; filename="index.csv" '},
+        headers={'Content-Disposition':'attachment;filename='+name+'.csv'},
     )
     fieldnames=data[0].keys()
     writer = csv.DictWriter(response,fieldnames)
+    print(writer)
     writer.writeheader()
     writer.writerows(data)
     return response
@@ -35,7 +36,8 @@ def cal(request):
     print(d)
     print(type(sensor_data))
     if request.GET.get("export",None)=="True":
-        res=cvs(d)
+        name='cal'
+        res=cvs(d,name)
         return res
 
     return render(request, "index.html", {"d":d})
@@ -52,6 +54,10 @@ def info(request):
     e = list(sensor_data)
     print(e)
     print(type(e))
+    if request.GET.get("done",None)=="True":
+        name='info'
+        res=cvs(e,name)
+        return res
     #return HttpResponse("working")
     return render(request,'info.html',{'ed':e})
 
@@ -65,6 +71,10 @@ def get_sum(request):
     print(type(sensor_sum))
     data=list(sensor_sum)
     print(data)
+    if request.GET.get("done",None)=="False":
+        name='get_Sum'
+        res=cvs(data,name)
+        return res
     return render(request,'get_sum.html',{'d':data})
 
 
@@ -77,6 +87,10 @@ def get_avg(request):
     print(type(sensor_avg))
     d=list(sensor_avg)
     print(d)
+    if request.GET.get("done",None)=="True":
+        name='get_avg'
+        res=cvs(d,name)
+        return res
     #return HttpResponse("hi")
     return render(request,'get_avg.html', {'data':d})
 
@@ -91,6 +105,10 @@ def get_bs_avg(request):
     print(type(boatsensor_data))
     d=list(boatsensor_data)
     print(d)
+    if request.GET.get("export",None)=="True":
+        name='get_bs_avg'
+        res=cvs(d,name)
+        return res
     return render(request, 'get_bs_avg.html',{"data":d})
 
 
@@ -102,5 +120,9 @@ def get_sensors(request):
     print(type(trip_data))
     d=list(trip_data)
     print(d)
+    if request.GET.get("export",None)=="True":
+        name='get_sensors'
+        res=cvs(d,name)
+        return res
     #return HttpResponse("hi")
     return render(request, 'get_sensors.html',{'data':d})
