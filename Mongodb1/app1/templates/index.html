@@ -5,42 +5,45 @@
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
     <title>getalldata</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
-    <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
-    <script src='main.js'></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <link rel='stylesheet' type='text/css' href='https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css'>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+
 </head>
 <body>
     <h2>#1] From a given trip, give me all the data for "Sensor X" over time</h2>
-    <form>
-        <table border="dark">
-            <thead>
-              <tr>
-                <th scope="col">sensorName</th>
-                <th scope="col">dataPoints</th>
-                <th scope="col">dateTime</th>
-                <th scope="col">tripId</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-              {% for i in d %}
-                <tr>
-                  <td>{{i.sensorName}}</td>
-                  <td>{{i.dataPoints}}</td>
-                  <td>{{i.dateTime}}</td>
-                  <td>{{i.tripId}}</td>
-                </tr>
-              {% endfor %}
-              </tr>
-              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#download">
-                <a href="{{request.path}}?export=True">Download</a>
-              </button>
-              
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#download">
+      <a href="{{request.path}}?export=True">Download</a>
+    </button>
+    
+    <!-- <form> -->
+      <table id="dataTable" border="dark">
+        <thead>
+          <tr>
+            <th>sensorName</th>
+            <th>dataPoints</th>
+            <th>dateTime</th>
+            <th>tripId</th>
+          </tr>
+        </thead>
+        <tbody>
 
-              
-                   
-            </tbody>
-          </table>
-    </form>
-
+            {% for i in data %}
+              <tr>
+                <td>{{i.sensorName}}</td>
+                <td>{{i.dataPoints}}</td>
+                <td>{{i.dateTime}}</td>
+                <td>{{i.tripId}}</td>
+              </tr>
+            {% endfor %}
+          
+        </tbody>
+      </table>
+    <!-- </form> -->
+    <script type="text/javascript">
+      $(document).ready(function(){
+        $('#dataTable').dataTable();
+      });
+    </script>
 </body>
 </html>
