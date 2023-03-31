@@ -33,7 +33,9 @@ def cvs(data, name):
 
 # 1] From a given trip, give me all the data for "Sensor X" over time
 def get_all_data(request):
-    print("hi")
+    print("hello")
+    print(request.GET.get("sensors"))
+    print("bye")
     trip_id = "63d4228e01afc1d6b6813e38"
     sensor_name = "GPS"
     from_time = datetime.now() - timedelta(days=90)
@@ -52,14 +54,15 @@ def get_all_data(request):
     )
     print(sensor_data)
     data = list(sensor_data)
-    print(data)
+    # print(data)
     # print(type(sensor_data))
     if request.GET.get("export", None) == "True":
         name = "cal"
         res = cvs(data, name)
         return res
-
     return render(request, "index.html", {"data": data})
+
+    # return HttpResponse("hi")
 
 
 # 2] From a given timespan, give me all the data for "Sensor X" over time
