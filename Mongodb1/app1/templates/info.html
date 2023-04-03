@@ -5,32 +5,77 @@
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
     <title>task 2</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
-    <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
-    <script src='main.js'></script>
-</head>
+    
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+
+    <link rel='stylesheet' type='text/css' href='https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css'>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.css" integrity="sha256-b88RdwbRJEzRx95nCuuva+hO5ExvXXnpX+78h8DjyOE=" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.js" integrity="sha256-/7FLTdzP6CfC1VBAj/rsp3Rinuuu9leMRGd354hvk0k=" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+      $(document).ready(function(){
+        $('#dataTable').dataTable();
+      });
+    </script>
+  </head>
+
 <body>
-    <h2>#2] From a given timespan, give me all the data for "Sensor X" over time</h2>
+  <h2>#2] From a given timespan, give me all the data for "Sensor X" over time</h2>
+
+  <h3>datepicker</h3>
+  <Form.Control type="date">
+    <input id="datepicker", name="datepicker" placeholder="from_date">
+    <script>
+      $(function () {
+        $("#datepicker").datepicker();
+      });
+    </script>
+  </Form.Control>
+
+  <Form.Control type="date">
+    <input id="date", name="datepicker" placeholder="to_date">
+    <script>
+      $(function () {
+        $("#date").datepicker();
+      });
+    </script>
+  </Form.Control>
+  <h3>Sensor names</h3>
+    <form action="" method="GET">
+      <select name="sensorName" >
+        <option value="select" >select</option>
+        <option value="GYRO">GYRO</option>
+        <option value="GPS">GPS</option>
+        <option value="MAG">MAG'</option>
+        <option value="AAC">AAC</option>
+        <option value="UACC">UACC</option>
+      </select>
+      <button type="submit" value="select">submit</button>
+    </form>
     <form>
-        <table border="dark">
+        <table id="dataTable" border="dark">
             <thead>
               <tr>
                 <th scope="col">sensorName</th>
                 <th scope="col">dataPoints</th>
                 <th scope="col">dateTime</th>
-                <!-- <th scope="col">tripId</th> -->
+                <th scope="col">tripId</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-              {% for i in ed %}
+              
+              {% for i in data %}
                 <tr>
                   <td>{{i.sensorName}}</td>
                   <td>{{i.dataPoints}}</td>
                   <td>{{i.dateTime}}</td>
-                  <!-- <td>{{i.tripId}}</td> -->
+                  <td>{{i.tripId}}</td>
                 </tr>
               {% endfor %}
-              </tr>
+
+              <br>
+              
               <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#download">
                 <a href="{{request.path}}?done=True">Download</a>
               </button>

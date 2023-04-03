@@ -22,16 +22,18 @@
 </head>
 <body>
   <H3>sensors available</H3>
-    <select  name="sensors">
-        <option value="sensorNames">sensorNames</option>
-        <option value="GYRO">GYRO</option>
-        <option value="GPS">GPS</option>
-        <option value="MAG">MAG'</option>
-        <option value="AAC">AAC</option>
-        <option value="UACC">UACC</option>
-    </select>
 
-  
+  <form action="" method="GET">
+    <select name="sensorName" >
+      <option value="GYRO">GYRO</option>
+      <option value="GPS">GPS</option>
+      <option value="MAG">MAG'</option>
+      <option value="AAC">AAC</option>
+      <option value="UACC">UACC</option>
+    </select>
+    <button type="submit" value="select">submit</button>
+  </form>
+
   <h3>datepicker</h3>
   <Form.Control type="date">
     <input id="datepicker", name="datepicker" placeholder="from_date">
@@ -55,8 +57,6 @@
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#download">
       <a href="{{request.path}}?export=True">Download</a>
     </button>
-    
-    
       <table id="dataTable" border="dark">
         <thead>
           <tr>
