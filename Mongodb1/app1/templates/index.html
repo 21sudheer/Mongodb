@@ -12,6 +12,7 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.css" integrity="sha256-b88RdwbRJEzRx95nCuuva+hO5ExvXXnpX+78h8DjyOE=" crossorigin="anonymous" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.js" integrity="sha256-/7FLTdzP6CfC1VBAj/rsp3Rinuuu9leMRGd354hvk0k=" crossorigin="anonymous"></script>
+
     
     <script type="text/javascript">
       $(document).ready(function(){
@@ -25,37 +26,40 @@
 
   <form action="" method="GET">
     <select name="sensorName" >
+      <option value="select">select</option>
       <option value="GYRO">GYRO</option>
       <option value="GPS">GPS</option>
       <option value="MAG">MAG'</option>
       <option value="AAC">AAC</option>
       <option value="UACC">UACC</option>
     </select>
+  
+
+    <h3>datepicker</h3>
+    <Form.Control type="date">
+      <input id="datepicker", name="from" placeholder="from_date">
+      <script type="text/javascript">
+        $(function () {
+          $('#datepicker').datepicker({ format: 'yyyy-mm-dd' }).val()
+        });
+      </script>
+    </Form.Control>
+
+    <Form.Control type="date">
+      <input id="date", name="to" placeholder="to_date">
+      <script type="text/javascript">
+        $(function () {
+          $('#date').datepicker({ format: 'yyyy-mm-dd' }).val()
+        });
+      </script>
+    </Form.Control>
     <button type="submit" value="select">submit</button>
+
   </form>
-
-  <h3>datepicker</h3>
-  <Form.Control type="date">
-    <input id="datepicker", name="datepicker" placeholder="from_date">
-    <script>
-      $(function () {
-        $("#datepicker").datepicker();
-      });
-    </script>
-  </Form.Control>
-
-  <Form.Control type="date">
-    <input id="date", name="datepicker" placeholder="to_date">
-    <script>
-      $(function () {
-        $("#date").datepicker();
-      });
-    </script>
-  </Form.Control>
 
     <h2>#1] From a given trip, give me all the data for "Sensor X" over time</h2>
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#download">
-      <a href="{{request.path}}?export=True">Download</a>
+      <a href="{{request.path}}?export=True{%if request.GET.sensorName%}&sensorName={{request.GET.sensorName}}{%endif%}{%if request.GET.from%}&from={{request.GET.from}}{%endif%}{%if request.GET.to%}&to={{request.GET.to}}{%endif%}">Download</a>
     </button>
       <table id="dataTable" border="dark">
         <thead>

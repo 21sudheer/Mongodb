@@ -10,8 +10,6 @@
     <link rel='stylesheet' type='text/css' href='https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css'>
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.css" integrity="sha256-b88RdwbRJEzRx95nCuuva+hO5ExvXXnpX+78h8DjyOE=" crossorigin="anonymous" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.js" integrity="sha256-/7FLTdzP6CfC1VBAj/rsp3Rinuuu9leMRGd354hvk0k=" crossorigin="anonymous"></script>
     <script type="text/javascript">
       $(document).ready(function(){
         $('#dataTable').dataTable();
@@ -20,25 +18,8 @@
 </head>
 <body>
      <h2>#5] From a given boat, give the average of “Sensor X” for each day between these dates</h2>
-     <h3>datepicker</h3>
 
-     <Form.Control type="date">
-       <input id="datepicker", name="datepicker" placeholder="from_date">
-       <script>
-         $(function () {
-           $("#datepicker").datepicker();
-         });
-       </script>
-     </Form.Control>
- 
-     <Form.Control type="date">
-       <input id="date", name="datepicker" placeholder="to_date">
-       <script>
-         $(function () {
-           $("#date").datepicker();
-         });
-       </script>
-     </Form.Control>
+     
      <form>
         <table id="dataTable" border="dark">
             <thead>
