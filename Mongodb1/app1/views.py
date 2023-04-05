@@ -11,6 +11,8 @@ connection = MongoClient()
 db = connection.querydata
 
 # Create your views here.
+def task(request):
+    return render(request, "task.html")
 
 
 def home(request):
@@ -40,6 +42,7 @@ def get_all_data(request):
             {"$project": {"_id": 0}},
         ]
     )
+    print(sensor_data)
     sensor_name = None
     from_time = None
     to_time = None
@@ -47,6 +50,18 @@ def get_all_data(request):
     if request.GET.get("sensorName"):
         sensor_name = request.GET.get("sensorName")
 
+    if request.GET.get("from"):
+        from_time = request.GET.get("from")
+
+    if request.GET.get("to"):
+        to_time = request.GET.get("to")
+
+    print(sensor_name, from_time, to_time)
+    print(type(sensor_name))
+    print(type(from_time))
+    print(type(to_time))
+
+    if sensor_name:
         sensor_data = db.vesseltripdata.aggregate(
             [
                 {
@@ -57,16 +72,29 @@ def get_all_data(request):
                 {"$project": {"_id": 0}},
             ]
         )
-    if request.GET.get("from"):
-        from_time = request.GET.get("from")
 
-    if request.GET.get("to"):
-        to_time = request.GET.get("to")
+    if from_time and to_time:
+        format = "%Y-%m-%d"
+        time1 = datetime.datetime.strptime(from_time, format)
+        print(type(time1))
+        time2 = datetime.datetime.strptime(to_time, format)
+        print(type(time2))
+        sensor_data = db.vesseltripdata.aggregate(
+            [
+                {
+                    "$match": {
+                        "dateTime": {"$gte": time1, "$lte": time2},
+                    }
+                },
+                {"$project": {"_id": 0}},
+            ]
+        )
 
-    print(sensor_name, from_time, to_time)
     if sensor_name and from_time and to_time:
         format = "%Y-%m-%d"
+
         from_time = datetime.datetime.strptime(from_time, format)
+
         to_time = datetime.datetime.strptime(to_time, format)
         sensor_data = db.vesseltripdata.aggregate(
             [
@@ -84,8 +112,8 @@ def get_all_data(request):
 
     if request.GET.get("export", None) == "True":
         name = "get_all_data"
-        res = common(data, name)
-        return res
+        result = common(data, name)
+        return result
     return render(request, "index.html", {"data": data})
 
 
@@ -103,6 +131,15 @@ def timespan(request):
     if request.GET.get("sensorName"):
         sensor_name = request.GET.get("sensorName")
 
+    if request.GET.get("from"):
+        from_time = request.GET.get("from")
+
+    if request.GET.get("to"):
+        to_time = request.GET.get("to")
+
+    print(sensor_name, from_time, to_time)
+
+    if sensor_name:
         sensor_data = db.vesseltripdata.aggregate(
             [
                 {
@@ -113,13 +150,23 @@ def timespan(request):
                 {"$project": {"_id": 0}},
             ]
         )
-    if request.GET.get("from"):
-        from_time = request.GET.get("from")
 
-    if request.GET.get("to"):
-        to_time = request.GET.get("to")
-
-    print(sensor_name, from_time, to_time)
+    if from_time and to_time:
+        format = "%Y-%m-%d"
+        time1 = datetime.datetime.strptime(from_time, format)
+        print(type(time1))
+        time2 = datetime.datetime.strptime(to_time, format)
+        print(type(time2))
+        sensor_data = db.vesseltripdata.aggregate(
+            [
+                {
+                    "$match": {
+                        "dateTime": {"$gte": time1, "$lte": time2},
+                    }
+                },
+                {"$project": {"_id": 0}},
+            ]
+        )
 
     if sensor_name and from_time and to_time:
         format = "%Y-%m-%d"
@@ -138,10 +185,13 @@ def timespan(request):
         )
 
     data = list(sensor_data)
+    print(data)
+    print(len(data))
+    print(type(data))
     if request.GET.get("done", None) == "True":
         name = "timespan"
-        res = common(data, name)
-        return res
+        result = common(data, name)
+        return result
     return render(request, "info.html", {"data": data})
 
 
@@ -239,8 +289,8 @@ def get_bs_avg(request):
     print(data)
     if request.GET.get("export", None) == "True":
         name = "get_bs_avg"
-        res = common(data, name)
-        return res
+        result = common(data, name)
+        return result
     return render(request, "get_bs_avg.html", {"data": data})
 
 
