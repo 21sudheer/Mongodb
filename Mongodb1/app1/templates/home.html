@@ -5,20 +5,252 @@
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
     <title>all</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
-    <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
-    <script src='main.js'></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <link rel='stylesheet' type='text/css' href='https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css'>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.css" integrity="sha256-b88RdwbRJEzRx95nCuuva+hO5ExvXXnpX+78h8DjyOE=" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.js" integrity="sha256-/7FLTdzP6CfC1VBAj/rsp3Rinuuu9leMRGd354hvk0k=" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+          $('#dataTable').dataTable();
+        });
+      </script>
 </head>
 <body>
-    <h3>Sensor data</h3>
 
-    <h4><a href="http://127.0.0.1:8000/get_all_data/">sensor data</a></h4>
-    <h4><a href="http://127.0.0.1:8000/timespan/">timespan data</a></h4>
-    <h4><a href="http://127.0.0.1:8000/get_sum/">get_sum data</a></h4>
-    <h4><a href="http://127.0.0.1:8000/get_avg/">get_avg data</a></h4>
-    <h4><a href="http://127.0.0.1:8000/get_bsavg/">get_bsavg data</a></h4>
-    <h4><a href="http://127.0.0.1:8000/get_sensors/">get_sensors data</a></h4>
+    <form action="" method="GET">
+        <h3>Trip Data:</h3>
+        <select name="tripId">
+            <option value="">select</option>
+            {% for i in data %} 
+            <option value="{{i.tripId}}">{{i.tripId}}</option>
+            {% endfor %}
+            {% if request.GET.tripId %}
+            <option value="{{request.GET.tripId}}" selected=selected>{{request.GET.tripId}}</option>
+            {%endif%}
+        </select>
+        
 
 
+
+        <h3>Sensor details:</h3>
+        <select name="sensorName">
+            <option value="">select</option>
+            {% for s in data1.0.sensors %}
+            <option value="{{s}}">{{s}}</option>
+            {% endfor %}
+            {% if data1.0.sensors %}
+            {% if request.GET.sensorName %}
+            <option value="{{request.GET.sensorName}}" selected=selected>{{request.GET.sensorName}}</option>
+            {% endif %}
+            {% endif %}
+        </select>
+
+        
+
+
+
+        <h3>datepicker</h3>
+      <Form.Control type="date">
+        <input id="datepicker", name="from" placeholder="from_date" value="{% if request.GET.from %}{{request.GET.from}}{% endif %}">
+        <script type="text/javascript">
+          $(function () {
+            $("#datepicker").datepicker();
+          });
+        </script>
+      </Form.Control>
+    
+      <Form.Control type="date">
+        <input id="date", name="to" placeholder="to_date" value="{% if request.GET.to %}{{request.GET.to}}{% endif %}">
+        <script type="text/javascript">
+          $(function () {
+            $("#date").datepicker();
+          });
+        </script>
+      </Form.Control>
+
+      {% if data1.0.sensors %}
+      {% if request.GET.sensorName %}
+      <h3>performance of sum/average on {{request.GET.sensorName}}</h3>
+      <select name="Details">
+        <option value="">select</option>
+        <option value="get_sum">get_sum</option>
+        <option value="get_average">get_average</option>
+        <option value="get_boat_sensor_average">get_boat_sensor_average</option>
+        {% if request.GET.Details %}
+            <option value="{{request.GET.Details}}" selected=selected>{{request.GET.Details}}</option>
+            {%endif%}        
+      </select>
+      {% endif %}
+      {% endif %}
+
+        <input type="submit">
+    </form>
+
+    {% if request.GET.tripId or request.GET.sensorName or time1 %}
+      {% if not request.GET.Details  %}
+        <div>
+          {% if not request.GET.sensorName and not request.GET.time1 %}
+        <h2>#1] Below is the data for the given "trip id: {{request.GET.tripId}}"</h2>
+          
+
+          {% elif not request.GET.time1 %}
+          <h2>#1] for this "trip id: {{request.GET.tripId}}", below is the {{request.GET.sensorName}} sensor data</h2>
+            
+
+            {% elif not request.GET.sensorName %}
+            <h2>#1] Below is the data for the given "trip id: {{request.GET.tripId}}" over the {{time1}} - {{time2}}</h2>
+            {% else %}
+            <h2>#1]for this "trip id: {{request.GET.tripId}}", below is the {{request.GET.sensorName}} sensor data over the {{time1}} - {{time2}}</h2>
+              {% endif %}
+
+
+        </div>
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#download">
+          <a href="{{request.path}}?export=True{%if request.GET.tripId%}&tripId={{request.GET.tripId}}{%endif%}{%if request.GET.sensorName%}&sensorName={{request.GET.sensorName}}{%endif%}{%if request.GET.from%}&from={{request.GET.from}}{%endif%}{%if request.GET.to%}&to={{request.GET.to}}{%endif%}">Download</a>
+        </button>
+      
+      <form>
+          <table id="dataTable" border="dark">
+              <thead>
+                <tr>
+                  <th scope="col">sensorName</th>
+                  <th scope="col">dataPoints</th>
+                  <th scope="col">dateTime</th>
+                  <th scope="col">tripId</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                {% for i in data2 %}
+                  <tr>
+                    <td>{{i.sensorName}}</td>
+                    <td>{{i.dataPoints}}</td>
+                    <td>{{i.dateTime}}</td>
+                    <td>{{i.tripId}}</td>
+                  </tr>
+                {% endfor %}
+
+                <br>
+                
+                
+                
+              </tbody>
+            </table>
+
+      </form>
+      {% endif %}
+    {% endif %}
+
+   
+
+    
+    
+    {% if request.GET.Details == "get_sum" %}
+    <h2>#2] From a given trip id: {{request.GET.tripId}}, give the sum of "{{request.GET.sensorName}}" throughout the entire trip</h2>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#download">
+      <a href="{{request.path}}?export1=True{%if request.GET.tripId%}&tripId={{request.GET.tripId}}{%endif%}{%if request.GET.sensorName%}&sensorName={{request.GET.sensorName}}{%endif%}{%if request.GET.from%}&from={{request.GET.from}}{%endif%}{%if request.GET.to%}&to={{request.GET.to}}{%endif%}{%if request.GET.Details%}&Details={{request.GET.Details}}{%endif%}">Download</a>
+    </button>
+    <form>
+      <table id="dataTable" border="dark">
+          <thead>
+            <tr>
+              <!-- <th scope="col">sensorName</th> -->
+              <th scope="col">index0_sum</th>
+              <th scope="col">index1_sum</th>
+              <th scope="col">index2_sum</th>
+            </tr>
+          </thead>
+          <tbody>
+            
+            {% for i in data3 %}
+              <tr>
+                <!-- <td>{{i.sensorName}}</td> -->
+                <td>{{i.index0_sum}}</td>
+                <td>{{i.index1_sum}}</td>
+                <td>{{i.index2_sum}}</td>
+              </tr>
+            {% endfor %}
+            
+            
+            
+          </tbody>
+        </table>
+  </form>  
+  {% endif %}
+  
+  {% if request.GET.Details == "get_average" %}
+  <h2>#4] From a given trip id: {{request.GET.tripId}}, give the average of "{{request.GET.sensorName}}" throughout the entire trip</h2>
+  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#download">
+    <a href="{{request.path}}?export2=True{%if request.GET.tripId%}&tripId={{request.GET.tripId}}{%endif%}{%if request.GET.sensorName%}&sensorName={{request.GET.sensorName}}{%endif%}{%if request.GET.from%}&from={{request.GET.from}}{%endif%}{%if request.GET.to%}&to={{request.GET.to}}{%endif%}{%if request.GET.Details%}&Details={{request.GET.Details}}{%endif%}">Download</a>
+  </button>
+  <form>
+    <table id="dataTable" border="dark">
+        <thead>
+          <tr>
+            <!-- <th scope="col">sensorName</th> -->
+            <th scope="col">index0_avg</th>
+            <th scope="col">index1_avg</th>
+            <th scope="col">index2_avg</th>
+          </tr>
+        </thead>
+        <tbody>
+          
+          {% for i in data4 %}
+            <tr>
+              <!-- <td>{{i.sensorName}}</td> -->
+              <td>{{i.index0_avg}}</td>
+              <td>{{i.index1_avg}}</td>
+              <td>{{i.index2_avg}}</td>
+            </tr>
+          {% endfor %}
+          
+          
+          
+        </tbody>
+      </table>
+</form>
+{% endif %}
+
+
+{% if request.GET.Details == "get_boat_sensor_average" %}
+<h2>#5] From a given trip id:{{request.GET.tripId}}, give the average of boat sensor “{{request.GET.sensorName}}” for over period of {{time1}} - {{time2}}</h2>
+{% if not data5 %}
+{{"please enter from date and to date and sensor name correctly"}}
+{% else %}
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#download">
+  <a href="{{request.path}}?export3=True{%if request.GET.tripId%}&tripId={{request.GET.tripId}}{%endif%}{%if request.GET.sensorName%}&sensorName={{request.GET.sensorName}}{%endif%}{%if request.GET.from%}&from={{request.GET.from}}{%endif%}{%if request.GET.to%}&to={{request.GET.to}}{%endif%}{%if request.GET.Details%}&Details={{request.GET.Details}}{%endif%}">Download</a>
+</button>
+<form>
+  <table id="dataTable" border="dark">
+      <thead>
+        <tr>
+          <!-- <th scope="col">sensorName</th> -->
+          <th scope="col">index0_avg</th>
+          <th scope="col">index1_avg</th>
+          <th scope="col">index2_avg</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+        {% for i in data5 %}
+          <tr>
+            <!-- <td>{{i.sensorName}}</td> -->
+            <td>{{i.index0_avg}}</td>
+            <td>{{i.index1_avg}}</td>
+            <td>{{i.index2_avg}}</td>
+          </tr>
+        {% endfor %}
+        
+        
+        
+      </tbody>
+    </table>
+</form>
+{% endif %}
+{% endif %}
     
 </body>
 </html>
